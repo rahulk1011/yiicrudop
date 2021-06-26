@@ -72,7 +72,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">CRUD-OP 2021 | @rahulk1011 &copy;</p>
+        <p class="pull-left">CRUD-OP | @rahulk1011 &copy;</p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
