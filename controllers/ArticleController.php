@@ -5,7 +5,9 @@ namespace app\controllers;
 use Yii;
 use app\models\Article;
 use app\models\ArticleSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -20,6 +22,17 @@ class ArticleController extends Controller
     public function behaviors()
     {
         return [
+            [
+                'class' => AccessControl::className(),
+                'only' => ['create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['create', 'update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -85,6 +98,9 @@ class ArticleController extends Controller
     public function actionUpdate($slug)
     {
         $model = $this->findModel($slug);
+        if ($model->created_by !== Yii::$app->user->id) {
+            throw new ForbiddenHttpException('You do not have the permission to update this article..!!');
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'slug' => $model->slug]);
@@ -104,7 +120,11 @@ class ArticleController extends Controller
      */
     public function actionDelete($slug)
     {
-        $this->findModel($slug)->delete();
+        $model = $this->findModel($slug);
+        if ($model->created_by !== Yii::$app->user->id) {
+            throw new ForbiddenHttpException('You do not have the permission to delete this article..!!');
+        }
+        $model->delete();
 
         return $this->redirect(['index']);
     }

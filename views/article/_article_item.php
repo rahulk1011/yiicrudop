@@ -11,5 +11,12 @@
     <div>
         <?php echo \yii\helpers\StringHelper::truncateWords($model->getEncodedBody(), 50); ?>
     </div>
+    <p class="text-muted text-right">
+        <small>
+            Created At: <b><?php echo Yii::$app->formatter->asDatetime($model->created_at); ?></b>
+            <br>
+            By: <b><?php echo $model->createdBy->username; ?></b>
+        </small>
+    </p>
     <hr>
 </div>
